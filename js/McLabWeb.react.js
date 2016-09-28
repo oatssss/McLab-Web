@@ -20,7 +20,7 @@ var McLabWeb = React.createClass({
           <SidePanelContainer />
           <div className="middle-container">
             <CodeContainer />
-            <TerminalContainer />
+            {/*<TerminalContainer />*/}
           </div>
         </div>
       </div>

@@ -62,9 +62,9 @@ class AceEditor extends Component {
     }
 
     if (prevProps.sidePanelOpen !== this.props.sidePanelOpen) {
-      // This is a huge hack. The size panel must finish rendering before
+      // This is a huge hack. The side panel must finish rendering before
       // the editor container can know its true size.
-      // This is the glorious day when we run into a concurrency bug is javascript
+      // This is the glorious day when we run into a concurrency bug in javascript
       setTimeout(() => this.editor.resize(), 0);
     }
 

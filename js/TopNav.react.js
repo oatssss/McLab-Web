@@ -37,22 +37,22 @@ class TopNav extends Component {
             href="/">
             New Session
           </a>
-          <a className="pure-button topnav-button"
-            onClick={fortranOnClick}>
-            Compile to Fortran
-          </a>
+          {/*<a className="pure-button topnav-button"*/}
+            {/*onClick={fortranOnClick}>*/}
+            {/*Compile to Fortran*/}
+          {/*</a>*/}
           <a className="pure-button topnav-button"
             onClick={KindAnalysisActions.runKindAnalysis}>
             Kind Analysis
           </a>
-          <a className="pure-button topnav-button"
-            onClick={OnLoadActions.printShortenedLink}>
-            Get Short Link
-          </a>
-          <a className="pure-button topnav-button"
-            onClick={JSCompileActions.openPanel}>
-            Compile/run Matlab to JS
-          </a>
+          {/*<a className="pure-button topnav-button"*/}
+            {/*onClick={OnLoadActions.printShortenedLink}>*/}
+            {/*Get Short Link*/}
+          {/*</a>*/}
+          {/*<a className="pure-button topnav-button"*/}
+            {/*onClick={JSCompileActions.openPanel}>*/}
+            {/*Compile/run Matlab to JS*/}
+          {/*</a>*/}
         </div>
       </div>
     );
