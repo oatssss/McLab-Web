@@ -436,10 +436,10 @@ body {
 }
 
 .ace-marker-undefined-function {
-  background-color: hsla(0, 100%, 50%, 0.5);
+  background-color: hsla(0, 100%, 50%, 0.4);
   position: absolute;
   z-index: 4;  /* The marker should be above the current line strip */
-  border: 1px solid #AAA;
+  /*border: 1px solid #AAA;*/
   box-sizing: content-box;
 }
 

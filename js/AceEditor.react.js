@@ -13,10 +13,10 @@ class AceEditor extends Component {
     const editor = ace.edit('editor');
     editor.setTheme("ace/theme/tomorrow");
     editor.getSession().setMode("ace/mode/matlab");
-    editor.setReadOnly(true);
+    // editor.setReadOnly(true);
     editor.setAnimatedScroll(true);
     editor.setShowPrintMargin(false);
-    editor.$blockScrolling = Infinity
+    editor.$blockScrolling = Infinity;
     this.editor = editor;
     this.markerIDs = Immutable.Set();
     window.debug_editor = editor;
@@ -44,6 +44,10 @@ class AceEditor extends Component {
           markerRange.endRow,
           markerRange.endColumn,
         );
+        // Use Ace anchors to allow marker to move with editor inserts/deletes
+        range.start = this.editor.getSession().doc.createAnchor(range.start);
+        range.end = this.editor.getSession().doc.createAnchor(range.end);
+        // range.end.$insertRight = true; // Characters inserted directly after the end anchor don't extend the marker
         const id = this.editor.session.addMarker(range, markerClass, 'text');
         this.markerIDs = this.markerIDs.add(id);
       }
