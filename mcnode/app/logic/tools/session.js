@@ -1,9 +1,11 @@
 "use strict";
+const fs = require('fs');
 var path = require('path');
 var request = require('superagent');
 
 var config = require(__base + 'config/config');
 var session_utils = require(__base + 'app/logic/util/session_utils');
+var userfile_utils = require(__base + 'app/logic/util/userfile_utils');
 
 // Create new UUID for the user and redirect them to that session
 function redirectToSession(req, res) {
@@ -50,9 +52,31 @@ function docs(req, res){
   res.sendFile(path.join(__base + '../docs/index.html'));
 }
 
+function saveFile(req, res) {
+  const sessionID = req.header('sessionID');
+  const filepath = req.params.filepath;
+  const write = req.body['write'];
+  let pathToFile = userfile_utils.fileInWorkspace(sessionID, filepath);
+  fs.writeFile(pathToFile, write, (err) => {
+    if (err) {
+      if (err.code === 'EACCES') {
+        res.status(403).json({error: `Could not write '${filepath}' to session ${sessionID}, permission denied.`});
+      }
+      else if (err.code === 'ENOENT') {
+        res.status(404).json({error: `'${filepath}' could not be written to session ${sessionID}`});
+        console.error(`'Attempted to write '${filepath}' for session ${sessionID} but ${pathToFile}' was not found on the server.`);
+      }
+      else {
+        throw err;
+      }
+    }
+  });
+}
+
 module.exports = {
   redirectToSession,
   homepage,
   shortenURL,
-  docs
+  docs,
+  saveFile
 };

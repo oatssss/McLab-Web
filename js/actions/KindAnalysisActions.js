@@ -79,12 +79,6 @@ function runKindAnalysis() {
         EditorMarkerActions.setMarkers(
           filePath,
           Immutable.Map({
-            // "ace-marker-kind-analysis-variable": Immutable.List(
-            //   variables.map(v => v.position)
-            // ),
-            // "ace-marker-kind-analysis-function": Immutable.List(
-            //   functions.map(f => f.position)
-            // )
             "ace-marker-undefined-function": Immutable.List(
               undefinedFunctions.map(f => f.position)
             )

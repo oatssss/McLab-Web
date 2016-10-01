@@ -1,7 +1,10 @@
 import EditorMarkerStore from './stores/EditorMarkerStore';
 import React from 'react';
 import Immutable from 'immutable';
-
+import request from 'superagent';
+import OnLoadActions from './actions/OnLoadActions';
+import OpenFileStore from './stores/OpenFileStore';
+import InterfaceActions from './actions/InterfaceActions';
 
 const aceRange = ace.require('ace/range').Range;
 
@@ -13,10 +16,11 @@ class AceEditor extends Component {
     const editor = ace.edit('editor');
     editor.setTheme("ace/theme/tomorrow");
     editor.getSession().setMode("ace/mode/matlab");
-    // editor.setReadOnly(true);
     editor.setAnimatedScroll(true);
     editor.setShowPrintMargin(false);
     editor.$blockScrolling = Infinity;
+    // Add custom editor commands
+    editor.commands.addCommand(saveCommand);
     this.editor = editor;
     this.markerIDs = Immutable.Set();
     window.debug_editor = editor;
@@ -61,7 +65,7 @@ class AceEditor extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.codeText !== this.props.codeText) {
+    if (this.editor.getValue() !== this.props.codeText) {
       this._setEditorText();
     }
 
@@ -96,6 +100,35 @@ AceEditor.propTypes = {
   onKeyDown: PropTypes.func,
   sidePanelOpen: PropTypes.bool.isRequired,
   markerData: PropTypes.instanceOf(EditorMarkerStore.getRecordType()),
+}
+
+// FIXME: substring(10) is a hack to get rid of 'workspace/'
+const saveCommand = {
+  name: "saveFile",
+  bindKey: {win: "Ctrl-s", mac: "Command-s"},
+  exec: function(editor) {
+    const baseURL = window.location.origin;
+    const sessionID = OnLoadActions.getSessionID();
+    const filePath = OpenFileStore.getFilePath();
+
+    if (filePath === null) {
+      InterfaceActions.showMessage(
+          "You need to open a file before attempting to save"
+      );
+      return;
+    }
+    request.post(baseURL + '/save/' + filePath.substring(10))
+        .set({SessionID: sessionID})
+        .send({write:editor.getValue()})
+      .end(function(err, res) {
+        if (err) {
+          console.error(err);
+        }
+        else {
+          InterfaceActions.showMessage(`Successfully saved '${filePath.substring(10)}'`);
+        }
+      });
+  }
 }
 
 export default AceEditor;

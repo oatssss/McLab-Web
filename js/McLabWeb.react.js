@@ -27,9 +27,9 @@ var McLabWeb = React.createClass({
     );
   },
 
-  componentDidMount(){
-    OnLoadActions.retrieveShortenedLink();
-  }
+  // componentDidMount(){
+  //   OnLoadActions.retrieveShortenedLink();
+  // }
 });
 
 ReactDOM.render(

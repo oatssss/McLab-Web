@@ -27,6 +27,8 @@ module.exports = function (app) {
     app.post('/compile/mc2for/', compile.compileToFortran);
     app.post('/compile/mcvmjs/', compile.compileToJS);
 
+    app.post('/save/:filepath([\\w-]*)/?', session.saveFile);
+
     app.get('/docs/', session.docs);
 };
 
