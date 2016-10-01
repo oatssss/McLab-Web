@@ -70,6 +70,9 @@ function saveFile(req, res) {
         throw err;
       }
     }
+    else {
+      res.end();
+    }
   });
 }
 

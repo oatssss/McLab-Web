@@ -119,7 +119,9 @@ const saveCommand = {
     }
     request.post(baseURL + '/save/' + filePath.substring(10))
         .set({SessionID: sessionID})
-        .send({write:editor.getValue()})
+        .send({
+          write: editor.getValue()
+        })
       .end(function(err, res) {
         if (err) {
           console.error(err);
