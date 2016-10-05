@@ -8,6 +8,7 @@ import EditorMarkerActions from './EditorMarkerActions';
 import request from 'superagent';
 import React from 'react';
 import BuiltinFuncs from '../constants/MatlabBuiltinFunctions';
+import MarkerClasses from '../constants/MarkerClasses';
 
 function printKindAnalysisSuccess() {
   Dispatcher.dispatch({
@@ -79,7 +80,7 @@ function runKindAnalysis() {
         EditorMarkerActions.setMarkers(
           filePath,
           Immutable.Map({
-            "ace-marker-undefined-function": Immutable.List(
+            [MarkerClasses.UNDEFINED]: Immutable.List(
               undefinedFunctions.map(f => f.position)
             )
           })

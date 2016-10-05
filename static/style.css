@@ -441,6 +441,7 @@ body {
   z-index: 4;  /* The marker should be above the current line strip */
   /*border: 1px solid #AAA;*/
   box-sizing: content-box;
+  pointer-events: all;
 }
 
 .terminal-error-color {

@@ -22,8 +22,18 @@ function hide(filePath) {
   });
 }
 
+function showMarkerInfo($markerElement) {
+  console.log(`SHOW: ${$markerElement}`);
+}
+
+function hideMarkerInfo($markerElement) {
+  console.log(`HIDE: ${$markerElement}`);
+}
+
 export default {
   setMarkers,
   show,
-  hide
+  hide,
+  showMarkerInfo,
+  hideMarkerInfo
 }
