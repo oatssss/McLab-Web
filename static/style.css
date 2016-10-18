@@ -131,7 +131,7 @@ body {
   line-height: 30px;
   bottom: -30px;
   overflow: hidden;
-  /*font-style: italic;*/
+  /*font-style: italic;
   -webkit-transition: height 0.3s;
   transition: height 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
   animation-direction: reverse;*/
@@ -441,6 +441,10 @@ body {
   z-index: 4;  /* The marker should be above the current line strip */
   /*border: 1px solid #AAA;*/
   box-sizing: content-box;
+}
+
+.ace-marker-popup-container {
+  z-index: 1000000;
 }
 
 .terminal-error-color {

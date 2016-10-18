@@ -33,6 +33,11 @@ export default keyMirror({
     MARKER_VISIBILITY: {
       TURN_ON: '',
       TURN_OFF: ''
+    },
+    MARKER_POPUP: {
+      ADD: '',
+      SET: '',
+      REMOVE: '',
     }
   },
   KIND_ANALYSIS: {

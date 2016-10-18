@@ -5,8 +5,13 @@ import request from 'superagent';
 import OnLoadActions from './actions/OnLoadActions';
 import OpenFileStore from './stores/OpenFileStore';
 import InterfaceActions from './actions/InterfaceActions';
+import MouseListenerActions from './actions/MouseListenerActions';
+import MarkerPopupContainer from './MarkerPopupContainer.react';
+import Dispatcher from './Dispatcher';
+import AT from './constants/AT';
 
 const aceRange = ace.require('ace/range').Range;
+const aceEvent = ace.require("ace/lib/event");
 
 const {PropTypes, Component} = React;
 
@@ -19,8 +24,9 @@ class AceEditor extends Component {
     editor.setAnimatedScroll(true);
     editor.setShowPrintMargin(false);
     editor.$blockScrolling = Infinity;
-    // Add custom editor commands
     editor.commands.addCommand(saveCommand);
+    // Attach MouseListenerActions to corresponding events
+    aceEvent.addListener(editor.renderer.scroller, "mousemove", (event) => MouseListenerActions.onMouseMove(event, editor));
     this.editor = editor;
     this.markerIDs = Immutable.Set();
     window.debug_editor = editor;
@@ -41,18 +47,24 @@ class AceEditor extends Component {
     for (let markerGroup of this.props.markerData.markers) {
       const markerClass = markerGroup[0];
       const markerList = markerGroup[1];
-      for (let markerRange of markerList) {
-        const range = new aceRange(
-          markerRange.startRow,
-          markerRange.startColumn,
-          markerRange.endRow,
-          markerRange.endColumn,
-        );
-        // Use Ace anchors to allow marker to move with editor inserts/deletes
-        range.start = this.editor.getSession().doc.createAnchor(range.start);
-        range.end = this.editor.getSession().doc.createAnchor(range.end);
+      for (let markerObject of markerList) {
+        // let markerRange = markerObject.position;
+        // const range = new aceRange(
+        //   markerRange.startRow,
+        //   markerRange.startColumn,
+        //   markerRange.endRow,
+        //   markerRange.endColumn,
+        // );
+        // // Use Ace anchors to allow marker to move with editor inserts/deletes
+        // range.start = this.editor.getSession().doc.createAnchor(range.start);
+        // range.end = this.editor.getSession().doc.createAnchor(range.end);
         // range.end.$insertRight = true; // Characters inserted directly after the end anchor don't extend the marker
-        const id = this.editor.session.addMarker(range, markerClass, 'text');
+        // const id = this.editor.session.addMarker(range, markerClass, 'text');
+        const id = this.editor.session.addMarker(
+            markerObject.position,
+            `${markerClass} marker-range-${markerObject.position.start.row}-${markerObject.position.start.column}`,
+            'text'
+        );
         this.markerIDs = this.markerIDs.add(id);
       }
     }
@@ -85,6 +97,7 @@ class AceEditor extends Component {
     return (
       <div className="ace-container" onKeyDown={this.props.onKeyDown}>
         <div id="editor"></div>
+        <MarkerPopupContainer/>
       </div>
     );
   }
@@ -130,6 +143,15 @@ const saveCommand = {
           InterfaceActions.showMessage(`Successfully saved '${filePath.substring(10)}'`);
         }
       });
+    // Make sure editor component gets the updated prop
+    Dispatcher.dispatch({
+      action: AT.FILE_CONTENT.DATA_LOADED,
+      data: {
+        filepath: filePath,
+        success: true,
+        fileContents: editor.getValue(),
+      },
+    })
   }
 }
 

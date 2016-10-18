@@ -8,6 +8,8 @@ import EditorMarkerActions from './EditorMarkerActions';
 import request from 'superagent';
 import React from 'react';
 import BuiltinFuncs from '../constants/MatlabBuiltinFunctions';
+import MT from '../constants/MarkerTypes';
+const aceRange = ace.require('ace/range').Range;
 
 function printKindAnalysisSuccess() {
   Dispatcher.dispatch({
@@ -74,14 +76,43 @@ function runKindAnalysis() {
         const data = JSON.parse(res.text);
         const variables = data['VAR'] || [];
         const functions = data['FUN'] || [];
+
+        // Convert the positions to ace ranges with anchors
+        variables.forEach(v => {
+            let range = new aceRange(
+                v.position.startRow,
+                v.position.startColumn,
+                v.position.endRow,
+                v.position.endColumn,
+            );
+            range.start = ace.edit('editor').getSession().doc.createAnchor(range.start);
+            range.end = ace.edit('editor').getSession().doc.createAnchor(range.end);
+            v.position = range;
+        });
+
+        functions.forEach(f => {
+            let range = new aceRange(
+                f.position.startRow,
+                f.position.startColumn,
+                f.position.endRow,
+                f.position.endColumn,
+            );
+            range.start = ace.edit('editor').getSession().doc.createAnchor(range.start);
+            range.end = ace.edit('editor').getSession().doc.createAnchor(range.end);
+            f.position = range;
+        });
+
         const undefinedFunctions = functions.filter(func => !BuiltinFuncs.includes(func.name));
 
         EditorMarkerActions.setMarkers(
           filePath,
+          // Immutable.Map({
+          //   [MT.FUNC_UNDEFINED.CLASS_NAME]: Immutable.List(
+          //     undefinedFunctions.map(f => f.position)
+          //   )
+          // })
           Immutable.Map({
-            "ace-marker-undefined-function": Immutable.List(
-              undefinedFunctions.map(f => f.position)
-            )
+            [MT.FUNC_UNDEFINED]: Immutable.List(undefinedFunctions)
           })
         );
         EditorMarkerActions.show(filePath);
