@@ -5,9 +5,8 @@
 import {Container} from 'flux/utils';
 import React from 'react';
 import ReactAceMarker from './ReactAceMarker.react';
-import MarkerPopupStore from './stores/MarkerPopupStore';
-// import EditorMarkerStore from './stores/EditorMarkerStore';
-import FileContentsStore from './stores/FileContentsStore';
+import EditorMarkerStore from './stores/EditorMarkerStore';
+import OpenFileStore from './stores/OpenFileStore';
 
 const { PropTypes, Component } = React;
 
@@ -15,26 +14,32 @@ class ReactAceMarkerContainer extends Component {
 
     static getStores() {
         return [
-            FileContentsStore,
-            // MarkerPopupStore,
-            // EditorMarkerStore
+            EditorMarkerStore,
+            OpenFileStore
         ];
     }
 
     static calculateState(prevState) {
+        console.log("CALC MARKER CONTAINER");
+        let markerData = EditorMarkerStore.get(OpenFileStore.getFilePath());
+        let markers = markerData ? markerData.markers : undefined;
+        let visible = markerData ? markerData.visible : undefined;
+        console.log(`Markers: ${markers}, Visible: ${visible}`);
         return {
-            // popups: MarkerPopupStore.getMarkerPopups(),
-            // markers: EditorMarkerStore.getMarkers()
+            markers,
+            visible
         };
     }
 
     render() {
-        console.log("RENDER MARKER CONTAINER");
-        const r = this.props.editor ? this.props.editor.renderer : undefined;
+        console.log(`RENDER MARKER CONTAINER: Visible = ${this.state.visible}`);
+        // const r = this.props.editor ? this.props.editor.renderer : undefined;
+        const editorElement = document.getElementById('editor');
+        const r = editorElement !== undefined ? ace.edit(editorElement).renderer : undefined;
 
         let markers = [];
-        if (this.props.markerData !== undefined && this.props.markerData.visible) {
-            for (let [markerType, markerList] of this.props.markerData.markers) {
+        if (r !== undefined && this.state.markers !== undefined && this.state.visible) {
+            for (let [markerType, markerList] of this.state.markers) {
                 for (let marker of markerList) {
                     const range = marker.position;
                     const left = range.start.column * r.characterWidth + r.gutterWidth - r.getScrollLeft() + r.$padding;

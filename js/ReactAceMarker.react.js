@@ -14,11 +14,12 @@ class ReactAceMarker extends Component {
     constructor(props) {
         super(props);
 
-        this._onHide = this._onHide.bind(this);
+        this._hide = this._hide.bind(this);
+        this._show = this._show.bind(this);
         // this._onExited = this._onExited.bind(this);
 
         this.state = {
-            show: true,
+            show: false,
             parentDiv: undefined,
             style: {
                 position: 'absolute',
@@ -26,12 +27,16 @@ class ReactAceMarker extends Component {
                 top: this.props.top,
                 width: this.props.width,
                 height: this.props.height,
-                pointerEvents: 'none'
+                // pointerEvents: 'none'
             },
         }
     }
 
-    _onHide() {
+    _show() {
+        this.setState({ show: true });
+    }
+
+    _hide() {
         this.setState({ show: false });
     }
 
@@ -77,16 +82,16 @@ class ReactAceMarker extends Component {
                 ref={(container) => this.container = container}
             >
                 <div
-                    className="marker-target"
+                    className={this.props.type}
                     ref={(target) => this.overlayTarget = target}
                     style={this.state.style}
+                    onMouseEnter={(syntheticEvent) => this._show()}
                 >
                 </div>
                 <Overlay
                     show={this.state.show}
                     rootClose={true}
-                    onHide={this._onHide}
-                    onExited={this._onExited}
+                    onHide={this._hide}
                     placement="right"
                     container={this.container}
                     target={() => this.overlayTarget}

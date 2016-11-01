@@ -28,12 +28,13 @@ function _relativePosition(x, y, editor) {
 
 function _getHoveredMarkerInfo(x, y, editor) {
     let markerInfo;
-    const pos = _relativePosition(x, y, editor);
     const allMarkers = EditorMarkerStore.getMarkers();
 
     if (allMarkers === undefined) {
         return markerInfo;
     }
+
+    const pos = _relativePosition(x, y, editor);
 
     // Label for-loop
     loop_markerClass:

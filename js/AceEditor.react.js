@@ -10,6 +10,7 @@ import MouseListenerActions from './actions/MouseListenerActions';
 import ReactAceMarkerContainer from './ReactAceMarkerContainer.react';
 import Dispatcher from './Dispatcher';
 import AT from './constants/AT';
+import ReactDOM from 'react-dom';
 
 const aceRange = ace.require('ace/range').Range;
 const aceEvent = ace.require("ace/lib/event");
@@ -41,7 +42,7 @@ class AceEditor extends Component {
   }
 
   _editorOnChange(event, editor) {
-    // if (!Dispatcher.isDispatching()) {
+    if (!Dispatcher.isDispatching()) {
       // Make sure the editor component gets the updated prop
       // Dispatcher.dispatch({
       //   action: AT.FILE_CONTENT.DATA_LOADED,
@@ -55,7 +56,7 @@ class AceEditor extends Component {
       // Hide the markers as soon as the user starts changing the code
       console.log(`FILESTORE: ${OpenFileStore.getFilePath()}`);
       EditorMarkerActions.hide(OpenFileStore.getFilePath());
-    // }
+    }
   }
 
   _renderMarkers() {
@@ -107,7 +108,7 @@ class AceEditor extends Component {
     return (
       <div className="ace-container" onKeyDown={this.props.onKeyDown}>
         <div id="editor"></div>
-        <ReactAceMarkerContainer markerData={this.props.markerData} editor={this.editor}/>
+        <ReactAceMarkerContainer />
       </div>
     );
   }

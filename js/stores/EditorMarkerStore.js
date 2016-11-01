@@ -28,8 +28,8 @@ class EditorMarkerStore extends MapStore {
       }
 
       case AT.EDITOR.MARKER_VISIBILITY.TURN_OFF: {
+        console.log(`VISIBILITY OFF`);
         const filePath = payload.data.filePath;
-        console.log(`VISIBILITY OFF FOR ${filePath}`);
         const fileRecord = map.get(filePath, new MarkerRecord());
         return map.set(filePath, fileRecord.set('visible', false));
       }
@@ -46,7 +46,7 @@ class EditorMarkerStore extends MapStore {
   getMarkers() {
     const innerFileMap = this.get(OpenFileStore.getFilePath());
     var markers;
-    if (innerFileMap !== undefined) {
+    if (innerFileMap !== undefined && innerFileMap.visible) {
       markers = innerFileMap['markers'];
     }
     return markers;

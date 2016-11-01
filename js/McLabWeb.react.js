@@ -9,6 +9,8 @@ import request from 'superagent';
 import Dispatcher from './Dispatcher';
 import AT from './constants/AT';
 import OnLoadActions from './actions/OnLoadActions';
+import ReactAceMarkerContainer from './ReactAceMarkerContainer.react';
+import AceEditor from './AceEditor.react';
 
 var McLabWeb = React.createClass({
   render: function() {
@@ -32,7 +34,17 @@ var McLabWeb = React.createClass({
   // }
 });
 
+function callback(root) {
+    // let editorElement = document.getElementById('editor');
+    // let aceContentElement = root.querySelector('.ace_content');
+    // console.log(aceContentElement);
+    // ReactDOM.render(
+    //     <ReactAceMarkerContainer editor={ace.edit('editor')}/>,
+    //     aceContentElement
+    // )
+}
+
 ReactDOM.render(
-  <McLabWeb />,
+  <McLabWeb ref={callback}/>,
   document.getElementById('app-container')
 );

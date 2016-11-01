@@ -115,8 +115,9 @@ function runKindAnalysis() {
             [MT.FUNC_UNDEFINED]: Immutable.List(undefinedFunctions)
           })
         );
-        console.log(`Setting SHOW for ${filePath}`);
+        // console.log(`Setting SHOW for ${filePath}`);
         EditorMarkerActions.show(filePath);
+        // console.log("WEIRD");
         Dispatcher.dispatch({
           action: AT.KIND_ANALYSIS.DATA_LOADED,
           data: {filePath, variables, functions}

@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import ActiveSidePanelStore from './stores/ActiveSidePanelStore';
 import AT from './constants/AT';
 import Dispatcher from './Dispatcher';
-import EditorMarkerStore from './stores/EditorMarkerStore';
+// import EditorMarkerStore from './stores/EditorMarkerStore';
 import OpenFileStore from './stores/OpenFileStore';
 import FileContentsStore from './stores/FileContentsStore';
 import {FileExplorer} from './FileExplorer.react';
@@ -17,7 +17,6 @@ class CodeContainer extends React.Component {
       OpenFileStore,
       FileContentsStore,
       ActiveSidePanelStore,
-      EditorMarkerStore,
     ];
   }
 
@@ -28,7 +27,6 @@ class CodeContainer extends React.Component {
       filePath: filePath,
       fileContents: FileContentsStore.get(filePath),
       sidePanelOpen: ActiveSidePanelStore.isPanelOpen(),
-      markerData: EditorMarkerStore.get(filePath),
     };
   }
 
@@ -41,9 +39,9 @@ class CodeContainer extends React.Component {
       } else {
         codeContent = (
           <AceEditor
+            filePath={this.state.filePath}
             codeText={this.state.fileContents.text}
             sidePanelOpen={this.state.sidePanelOpen}
-            markerData={this.state.markerData}
             onKeyDown={event => {
               if (event.key === 'Escape') {
                 Dispatcher.dispatch({
