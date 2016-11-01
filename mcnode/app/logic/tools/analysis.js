@@ -59,6 +59,7 @@ function performKindAnalysis(sessionID, filepath, cb){
 function kindAnalysis(req, res) {
   const sessionID = req.header('sessionID');
   const filepath = req.params.filepath;
+  // const analyze = req.body['analyze'];
   performKindAnalysis(sessionID, filepath, (err, output) =>{
     if (!err){
       res.json(output);

@@ -12,52 +12,6 @@ const aceRange = ace.require('ace/range').Range;
 
 let delayTimer = 0;
 
-/*
-function _allElementsFromPoint(x, y) {
-    var element, elements = [];
-    var old_visibility = [];
-    while (true) {
-        element = document.elementFromPoint(x, y);
-        if (!element || element === document.documentElement) {
-            break;
-        }
-        elements.push(element);
-        old_visibility.push(element.style.visibility);
-        element.style.visibility = 'hidden'; // Temporarily hide the element (without changing the layout)
-    }
-    for (var k = 0; k < elements.length; k++) {
-        elements[k].style.visibility = old_visibility[k];
-    }
-    elements.reverse();
-    return elements;
-}
-*/
-
-/*
-function _firstElementFromPointOfClass(x, y, className) {
-    var element, firstElement, elements = [];
-    var old_visibility = [];
-    while (true) {
-        element = document.elementFromPoint(x, y);
-        if (!element || element === document.documentElement) {
-            break;
-        }
-        console.log(`${element.classList} FIND: ${className}`);
-        if (element.classList.contains(className)) {
-            firstElement = element;
-            break;
-        }
-        elements.push(element);
-        old_visibility.push(element.style.visibility);
-        element.style.visibility = 'hidden'; // Temporarily hide the element (without changing the layout)
-    }
-    for (var k = 0; k < elements.length; k++) {
-        elements[k].style.visibility = old_visibility[k];
-    }
-    return firstElement;
-}
-*/
-
 function _relativePosition(x, y, editor) {
     const r = editor.renderer;
     const canvasRect = r.scroller.getBoundingClientRect();

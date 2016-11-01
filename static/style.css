@@ -443,8 +443,25 @@ body {
   box-sizing: content-box;
 }
 
-.ace-marker-popup-container {
-  z-index: 1000000;
+.react-ace-marker-container {
+  position: absolute;
+  z-index: 5;
+}
+
+.react-ace-marker-popup {
+  position: absolute;
+  z-index: 5;
+  font-size: smaller;
+  width: 200px;
+  padding: 6px;
+  border: 1px solid #AAA;
+  border-radius: 5px;
+  background-color: white;
+  text-align: justify;
+}
+
+.react-ace-marker-popup .message {
+  margin-bottom: 10px;
 }
 
 .terminal-error-color {
@@ -468,4 +485,8 @@ body {
 
 .kind-analysis-panel-sym-position {
   padding: 0px 5px;
+}
+
+.strip-margins {
+  margin: 0;
 }

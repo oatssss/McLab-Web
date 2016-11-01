@@ -1,4 +1,5 @@
 import EditorMarkerStore from './stores/EditorMarkerStore';
+import EditorMarkerActions from './actions/EditorMarkerActions';
 import React from 'react';
 import Immutable from 'immutable';
 import request from 'superagent';
@@ -6,7 +7,7 @@ import OnLoadActions from './actions/OnLoadActions';
 import OpenFileStore from './stores/OpenFileStore';
 import InterfaceActions from './actions/InterfaceActions';
 import MouseListenerActions from './actions/MouseListenerActions';
-import MarkerPopupContainer from './MarkerPopupContainer.react';
+import ReactAceMarkerContainer from './ReactAceMarkerContainer.react';
 import Dispatcher from './Dispatcher';
 import AT from './constants/AT';
 
@@ -27,6 +28,8 @@ class AceEditor extends Component {
     editor.commands.addCommand(saveCommand);
     // Attach MouseListenerActions to corresponding events
     aceEvent.addListener(editor.renderer.scroller, "mousemove", (event) => MouseListenerActions.onMouseMove(event, editor));
+    // Set a handler for editor changes
+    editor.on("change", (event) => this._editorOnChange(event, editor));
     this.editor = editor;
     this.markerIDs = Immutable.Set();
     window.debug_editor = editor;
@@ -37,7 +40,26 @@ class AceEditor extends Component {
     this.editor.navigateFileStart();
   }
 
+  _editorOnChange(event, editor) {
+    // if (!Dispatcher.isDispatching()) {
+      // Make sure the editor component gets the updated prop
+      // Dispatcher.dispatch({
+      //   action: AT.FILE_CONTENT.DATA_LOADED,
+      //   data: {
+      //     filepath: OpenFileStore.getFilePath(),
+      //     success: true,
+      //     fileContents: editor.getValue(),
+      //   },
+      // });
+
+      // Hide the markers as soon as the user starts changing the code
+      console.log(`FILESTORE: ${OpenFileStore.getFilePath()}`);
+      EditorMarkerActions.hide(OpenFileStore.getFilePath());
+    // }
+  }
+
   _renderMarkers() {
+    console.log("CALL TO RENDER MARKERS");
     this.markerIDs.forEach(
       id => this.editor.session.removeMarker(id)
     );
@@ -48,18 +70,6 @@ class AceEditor extends Component {
       const markerClass = markerGroup[0];
       const markerList = markerGroup[1];
       for (let markerObject of markerList) {
-        // let markerRange = markerObject.position;
-        // const range = new aceRange(
-        //   markerRange.startRow,
-        //   markerRange.startColumn,
-        //   markerRange.endRow,
-        //   markerRange.endColumn,
-        // );
-        // // Use Ace anchors to allow marker to move with editor inserts/deletes
-        // range.start = this.editor.getSession().doc.createAnchor(range.start);
-        // range.end = this.editor.getSession().doc.createAnchor(range.end);
-        // range.end.$insertRight = true; // Characters inserted directly after the end anchor don't extend the marker
-        // const id = this.editor.session.addMarker(range, markerClass, 'text');
         const id = this.editor.session.addMarker(
             markerObject.position,
             `${markerClass} marker-range-${markerObject.position.start.row}-${markerObject.position.start.column}`,
@@ -77,6 +87,7 @@ class AceEditor extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    console.log("AceEditor DidUpdate");
     if (this.editor.getValue() !== this.props.codeText) {
       this._setEditorText();
     }
@@ -88,16 +99,15 @@ class AceEditor extends Component {
       setTimeout(() => this.editor.resize(), 0);
     }
 
-    if (prevProps.markerData !== this.props.markerData) {
-      this._renderMarkers();
-    }
+    this._renderMarkers();
   }
 
   render() {
+    console.log("AceEditor RENDER");
     return (
       <div className="ace-container" onKeyDown={this.props.onKeyDown}>
         <div id="editor"></div>
-        <MarkerPopupContainer/>
+        <ReactAceMarkerContainer markerData={this.props.markerData} editor={this.editor}/>
       </div>
     );
   }
@@ -143,15 +153,6 @@ const saveCommand = {
           InterfaceActions.showMessage(`Successfully saved '${filePath.substring(10)}'`);
         }
       });
-    // Make sure editor component gets the updated prop
-    Dispatcher.dispatch({
-      action: AT.FILE_CONTENT.DATA_LOADED,
-      data: {
-        filepath: filePath,
-        success: true,
-        fileContents: editor.getValue(),
-      },
-    })
   }
 }
 

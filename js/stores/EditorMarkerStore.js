@@ -22,12 +22,14 @@ class EditorMarkerStore extends MapStore {
 
       case AT.EDITOR.MARKER_VISIBILITY.TURN_ON: {
         const filePath = payload.data.filePath;
+        console.log(`VISIBILITY ON FOR ${filePath}`);
         const fileRecord = map.get(filePath, new MarkerRecord());
         return map.set(filePath, fileRecord.set('visible', true));
       }
 
       case AT.EDITOR.MARKER_VISIBILITY.TURN_OFF: {
         const filePath = payload.data.filePath;
+        console.log(`VISIBILITY OFF FOR ${filePath}`);
         const fileRecord = map.get(filePath, new MarkerRecord());
         return map.set(filePath, fileRecord.set('visible', false));
       }
