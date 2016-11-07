@@ -51,9 +51,26 @@ class AceEditor extends Component {
         // Use Ace anchors to allow marker to move with editor inserts/deletes
         range.start = this.editor.getSession().doc.createAnchor(range.start);
         range.end = this.editor.getSession().doc.createAnchor(range.end);
-        // range.end.$insertRight = true; // Characters inserted directly after the end anchor don't extend the marker
-        const id = this.editor.session.addMarker(range, markerClass, 'text');
-        this.markerIDs = this.markerIDs.add(id);
+        range.end.$insertRight = true; // Characters inserted directly after the end anchor don't extend the marker
+
+        var dynamicMarker = {};
+        dynamicMarker.update = function(html, markerLayer, session, config) {
+          let stringBuilder = [];
+          if (range.isMultiLine()) {
+            markerLayer.drawTextMarker(stringBuilder, range, markerClass, config);
+          }
+          else {
+            markerLayer.drawSingleLineMarker(stringBuilder, range, markerClass + " ace_start" + " ace_br15", config);
+          }
+          let markerElement = $.parseHTML(stringBuilder.join(''));
+          markerElement = markerElement[0];
+          $(markerElement).css( 'pointer-events', 'auto' );
+          $(markerElement).mouseover((event) => console.log('TRIGGERED'));
+          markerLayer.element.appendChild(markerElement);
+        }
+
+        const theMarker = this.editor.session.addDynamicMarker(dynamicMarker);
+        this.markerIDs = this.markerIDs.add(theMarker.id);
       }
     }
   }
@@ -134,3 +151,44 @@ const saveCommand = {
 }
 
 export default AceEditor;
+
+/*
+var dynamicMarker = {};
+dynamicMarker.update = function(html, markerLayer, session, config) {
+  // range = range.clipRows(config.firstRow, config.lastRow);
+  // range = range.toScreenRange(session);
+  drawSingleLineMarkerWithPopup(markerLayer, range, markerClass + " ace_start" + " ace_br15", config);
+}
+
+function getBorderClass(tl, tr, br, bl) {
+  return (tl ? 1 : 0) | (tr ? 2 : 0) | (br ? 4 : 0) | (bl ? 8 : 0);
+}
+
+function drawSingleLineMarkerWithPopup(markerLayer, range, clazz, config, extraLength, extraData) {
+  var height = config.lineHeight;
+  var width = (range.end.column + (extraLength || 0) - range.start.column) * config.characterWidth;
+  console.log(width);
+
+  var top = markerLayer.$getTop(range.start.row, config);
+  var left = markerLayer.$padding + range.start.column * config.characterWidth;
+
+  var container = document.createElement("div");
+  container.className = clazz;
+  container.style.height = `${height}px`;
+  container.style.width = `${width}px`;
+  container.style.top = `${top}px`;
+  container.style.left = `${left}px`;
+  container.onmouseenter = EditorMarkerActions.showMarkerInfo(container);
+  container.onmouseleave = EditorMarkerActions.hideMarkerInfo(container);
+
+  if (extraData !== undefined) {
+    container.setAttribute("data-info", JSON.stringify(extraData));
+    if (extraData.popup) {
+      container.onmouseenter = EditorMarkerActions.showMarkerInfo(container);
+      container.onmouseleave = EditorMarkerActions.hideMarkerInfo(container);
+    }
+  }
+  console.log("APPEND");
+  markerLayer.element.appendChild(container);
+};
+*/
