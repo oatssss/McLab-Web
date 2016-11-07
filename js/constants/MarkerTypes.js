@@ -4,22 +4,18 @@
 
 import React from 'react';
 
-/* Prepend */
-const pre = "ace-marker";
-
 /* Marker Types */
 const MT = {
-    FUNC_UNDEFINED: `${pre}-undefined-function`,
+    FUNC_UNDEFINED: 'undefined-function',
 }
 
 /* Define suggested actions */
 const defineInNewFile = {
     action: (event, eventKey) => {
-        // let popup = MarkerPopupStore.get(popupRange);
-        // console.log(`Creating '${popup.tokenName}.m'...`);
+        console.log(`Creating '${eventKey}.m'...`);
     },
-    description: (id) => {
-        return `Define ${id}() in a new file`;
+    description: (name) => {
+        return `Define ${name}() in a new file`;
     }
 }
 
@@ -37,7 +33,7 @@ const MD = {
     }
 }
 
-
+/* Helper Methods */
 
 export {
     MD,

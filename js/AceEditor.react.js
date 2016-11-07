@@ -43,12 +43,12 @@ class AceEditor extends Component {
     for (let markerGroup of this.props.markerData.markers) {
       const markerClass = markerGroup[0];
       const markerList = markerGroup[1];
-      for (let markerRange of markerList) {
+      for (let marker of markerList) {
         const range = new aceRange(
-          markerRange.startRow,
-          markerRange.startColumn,
-          markerRange.endRow,
-          markerRange.endColumn,
+          marker.position.startRow,
+          marker.position.startColumn,
+          marker.position.endRow,
+          marker.position.endColumn,
         );
         // Use Ace anchors to allow marker to move with editor inserts/deletes
         range.start = this.editor.getSession().doc.createAnchor(range.start);
@@ -66,14 +66,14 @@ class AceEditor extends Component {
           }
           let markerElement = $.parseHTML(stringBuilder.join(''));
           markerElement = markerElement[0];
-          // markerElement.setAttribute('data-marker-id', range.toString());
           ReactDOM.render(
               <MarkerPopup
                   ref={(marker) => this.marker = marker}
                   type={markerClass}
+                  name={marker.name}
                   id={range.toString()}
                   target={markerElement}
-                  container={this.editor.renderer.scroller}
+                  container={$('#editor')[0]}
               />,
               markerElement
           );

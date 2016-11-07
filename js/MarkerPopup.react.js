@@ -15,27 +15,27 @@ class MarkerPopup extends Component {
 
         this._hide = this._hide.bind(this);
         this._show = this._show.bind(this);
-        // this._onExited = this._onExited.bind(this);
 
         this.state = {
-            show: false,
-            style: {
-                position: 'absolute',
-                // left: this.props.left,
-                // top: this.props.top,
-                // width: this.props.width,
-                // height: this.props.height,
-                // pointerEvents: 'none'
-            },
+            show: false
         }
     }
 
     _show() {
         this.setState({ show: true });
+        const visiblePopup = MarkerPopup.visiblePopup;
+        if (visiblePopup !== undefined && visiblePopup !== this) {
+            visiblePopup._hide();
+        }
+        MarkerPopup.visiblePopup = this;
     }
 
     _hide() {
         this.setState({ show: false });
+        const visiblePopup = MarkerPopup.visiblePopup;
+        if (visiblePopup !== undefined && visiblePopup === this) {
+            MarkerPopup.visiblePopup = undefined;
+        }
     }
 
     render() {
@@ -46,16 +46,20 @@ class MarkerPopup extends Component {
         if (actions) {
             let buttons = actions.map( (btnData, i) => (
                 <MenuItem
+                    className="item"
                     key={ i }
-                    eventKey={ this.props.id }
-                    onSelect={ btnData.action }
+                    eventKey={ this.props.name }
+                    onSelect={ (event, eventKey) => {
+                        this._hide();
+                        btnData.action(event, eventKey);
+                    }}
                 >
-                    { btnData.description(this.props.id) }
+                    { btnData.description(this.props.name) }
                 </MenuItem>
             ));
 
             actionDropdown = (
-                <div className="react-ace-marker-popup-dropdown-container" >
+                <div className="dropdown" >
                     <DropdownButton
                         className="strip-margins"
                         title="Suggested Actions"
@@ -68,8 +72,6 @@ class MarkerPopup extends Component {
             );
         }
 
-        // let style = Object.assign({}, this.state.style);
-        // TODO: Add hover handler to reset the hoverTimeStamp and update MarkerPopupStore
         return (
             <Overlay
                 show={this.state.show}
@@ -79,9 +81,9 @@ class MarkerPopup extends Component {
                 container={this.props.container}
                 target={() => this.props.target}
             >
-                <div className="react-ace-marker-popup">
+                <div className={`react-ace-marker-popup ${this.props.type}`}>
                     <div className="message">
-                        { markerData.message(this.props.id) }
+                        { markerData.message(this.props.name) }
                     </div>
                     { actionDropdown }
                 </div>
