@@ -443,6 +443,19 @@ body {
   box-sizing: content-box;
 }
 
+.react-ace-marker-popup {
+  position: absolute;
+  z-index: 5;
+  font-size: smaller;
+  width: 200px;
+  padding: 6px;
+  border: 1px solid #AAA;
+  border-radius: 5px;
+  background-color: white;
+  text-align: justify;
+  pointer-events: auto;
+}
+
 .terminal-error-color {
   color: hsl(2, 64%, 58%);
 }

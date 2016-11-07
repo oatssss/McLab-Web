@@ -5,6 +5,8 @@ import request from 'superagent';
 import OnLoadActions from './actions/OnLoadActions';
 import OpenFileStore from './stores/OpenFileStore';
 import InterfaceActions from './actions/InterfaceActions';
+import ReactDOM from 'react-dom';
+import MarkerPopup from './MarkerPopup.react';
 
 const aceRange = ace.require('ace/range').Range;
 
@@ -53,7 +55,7 @@ class AceEditor extends Component {
         range.end = this.editor.getSession().doc.createAnchor(range.end);
         range.end.$insertRight = true; // Characters inserted directly after the end anchor don't extend the marker
 
-        var dynamicMarker = {};
+        var dynamicMarker = { editor: this.editor };
         dynamicMarker.update = function(html, markerLayer, session, config) {
           let stringBuilder = [];
           if (range.isMultiLine()) {
@@ -64,8 +66,19 @@ class AceEditor extends Component {
           }
           let markerElement = $.parseHTML(stringBuilder.join(''));
           markerElement = markerElement[0];
+          // markerElement.setAttribute('data-marker-id', range.toString());
+          ReactDOM.render(
+              <MarkerPopup
+                  ref={(marker) => this.marker = marker}
+                  type={markerClass}
+                  id={range.toString()}
+                  target={markerElement}
+                  container={this.editor.renderer.scroller}
+              />,
+              markerElement
+          );
           $(markerElement).css( 'pointer-events', 'auto' );
-          $(markerElement).mouseover((event) => console.log('TRIGGERED'));
+          $(markerElement).mouseover((event) => { console.log('TRIGGERED'); this.marker._show();});
           markerLayer.element.appendChild(markerElement);
         }
 
