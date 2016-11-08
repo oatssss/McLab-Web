@@ -78,7 +78,16 @@ class AceEditor extends Component {
               markerElement
           );
           $(markerElement).css( 'pointer-events', 'auto' );
-          $(markerElement).mouseover((event) => { console.log('TRIGGERED'); this.marker._show();});
+          $(markerElement).mouseenter((event) => {
+            this.marker._triggerShowTimeout();
+          });
+          $(markerElement).mouseleave((event) => {
+            this.marker._triggerHideTimeout();
+          });
+          $(markerElement).mouseup((event) => {
+            event.preventDefault();
+            this.marker._show();
+          });
           markerLayer.element.appendChild(markerElement);
         }
 

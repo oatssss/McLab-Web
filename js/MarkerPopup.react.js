@@ -13,6 +13,11 @@ class MarkerPopup extends Component {
     constructor(props) {
         super(props);
 
+        this.showTimeout;
+        this.hideTimeout;
+
+        this._triggerShowTimeout.bind(this);
+        this._triggerHideTimeout.bind(this);
         this._hide = this._hide.bind(this);
         this._show = this._show.bind(this);
 
@@ -21,21 +26,63 @@ class MarkerPopup extends Component {
         }
     }
 
+    _triggerShowTimeout() {
+        if (this.hideTimeout !== undefined) {
+            clearTimeout(this.hideTimeout);
+        }
+        const queuedMarker = MarkerPopup.queuedMarker;
+        if (queuedMarker !== undefined && queuedMarker !== this) {
+            clearTimeout(queuedMarker.showTimeout);
+        }
+        if (queuedMarker !== this) {
+            this.showTimeout = setTimeout(() => {
+                this.showTimeout = undefined;
+                this._show();
+            }, MarkerPopup.transitionTimeout);
+        }
+        MarkerPopup.queuedMarker = this;
+    }
+
+    _triggerHideTimeout() {
+        if (this.showTimeout !== undefined) {
+            clearTimeout(this.showTimeout);
+            if (MarkerPopup.queuedMarker === this) {
+                MarkerPopup.queuedMarker = undefined;
+            }
+        }
+        this.hideTimeout = setTimeout(() => {
+            this.hideTimeout = undefined;
+            this._hide();
+        }, MarkerPopup.transitionTimeout);
+    }
+
     _show() {
-        this.setState({ show: true });
+        if (MarkerPopup.queuedMarker === this) {
+            MarkerPopup.queuedMarker = undefined;
+        }
+        if (this.showTimeout !== undefined) {
+            clearTimeout(this.showTimeout);
+        }
         const visiblePopup = MarkerPopup.visiblePopup;
         if (visiblePopup !== undefined && visiblePopup !== this) {
             visiblePopup._hide();
         }
         MarkerPopup.visiblePopup = this;
+        this.setState({ show: true });
     }
 
     _hide() {
-        this.setState({ show: false });
+        if (this.showTimeout !== undefined) {
+            clearTimeout(this.showTimeout);
+        }
+        if (this.hideTimeout !== undefined) {
+            clearTimeout(this.hideTimeout);
+        }
         const visiblePopup = MarkerPopup.visiblePopup;
         if (visiblePopup !== undefined && visiblePopup === this) {
             MarkerPopup.visiblePopup = undefined;
         }
+        this.setState({ show: false });
     }
 
     render() {
@@ -91,6 +138,10 @@ class MarkerPopup extends Component {
         );
     }
 }
+
+MarkerPopup.visiblePopup;
+MarkerPopup.queuedMarker;
+MarkerPopup.transitionTimeout = 500;
 
 MarkerPopup.propTypes = {
     marker: PropTypes.object,

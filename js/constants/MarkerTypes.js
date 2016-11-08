@@ -12,7 +12,9 @@ const MT = {
 /* Define suggested actions */
 const defineInNewFile = {
     action: (event, eventKey) => {
-        console.log(`Creating '${eventKey}.m'...`);
+        markerClearingAction(/* markerType */)(() => {
+            console.log(`Creating '${eventKey}.m'...`);
+        });
     },
     description: (name) => {
         return `Define ${name}() in a new file`;
@@ -34,6 +36,20 @@ const MD = {
 }
 
 /* Helper Methods */
+// An action that also clears the error associated with the marker from the marker store
+function markerClearingAction(markerType) {
+    return (
+        (action) => {
+            try {
+                action();
+            }
+            catch (e) {
+
+            }
+            // Remove markers of markerType from marker store
+        }
+    );
+}
 
 export {
     MD,
