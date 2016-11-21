@@ -98,7 +98,7 @@ class MarkerPopup extends Component {
                     eventKey={ this.props.name }
                     onSelect={ (event, eventKey) => {
                         this._hide();
-                        btnData.action(event, eventKey);
+                        btnData.action(event, {name: this.props.name, type: this.props.type});
                     }}
                 >
                     { btnData.description(this.props.name) }
@@ -128,7 +128,13 @@ class MarkerPopup extends Component {
                 container={this.props.container}
                 target={() => this.props.target}
             >
-                <div className={`react-ace-marker-popup ${this.props.type}`}>
+                <div
+                    className={`react-ace-marker-popup ${this.props.type}`}
+                    onMouseEnter={() => {
+                        clearTimeout(this.hideTimeout);
+                    }}
+                    onMouseLeave={() => this._triggerHideTimeout()}
+                >
                     <div className="message">
                         { markerData.message(this.props.name) }
                     </div>
@@ -139,12 +145,10 @@ class MarkerPopup extends Component {
     }
 }
 
-MarkerPopup.visiblePopup;
-MarkerPopup.queuedMarker;
 MarkerPopup.transitionTimeout = 500;
 
-MarkerPopup.propTypes = {
-    marker: PropTypes.object,
-};
+// MarkerPopup.propTypes = {
+//     marker: PropTypes.object,
+// };
 
 export default MarkerPopup;

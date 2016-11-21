@@ -7,6 +7,8 @@ import OpenFileStore from './stores/OpenFileStore';
 import InterfaceActions from './actions/InterfaceActions';
 import ReactDOM from 'react-dom';
 import MarkerPopup from './MarkerPopup.react';
+import Dispatcher from './Dispatcher';
+import AT from './constants/AT';
 
 const aceRange = ace.require('ace/range').Range;
 
@@ -156,7 +158,7 @@ const saveCommand = {
       );
       return;
     }
-    request.post(baseURL + '/save/' + filePath.substring(10))
+    request.post(baseURL + '/files/save/' + filePath.substring(10))
         .set({SessionID: sessionID})
         .send({
           write: editor.getValue()
@@ -169,48 +171,17 @@ const saveCommand = {
           InterfaceActions.showMessage(`Successfully saved '${filePath.substring(10)}'`);
         }
       });
+
+    // Load the changes into the store
+    Dispatcher.dispatch({
+        action: AT.FILE_CONTENT.DATA_LOADED,
+        data: {
+            filepath: filePath,
+            success: true,
+            fileContents: editor.getValue(),
+        },
+    });
   }
-}
+};
 
 export default AceEditor;
-
-/*
-var dynamicMarker = {};
-dynamicMarker.update = function(html, markerLayer, session, config) {
-  // range = range.clipRows(config.firstRow, config.lastRow);
-  // range = range.toScreenRange(session);
-  drawSingleLineMarkerWithPopup(markerLayer, range, markerClass + " ace_start" + " ace_br15", config);
-}
-
-function getBorderClass(tl, tr, br, bl) {
-  return (tl ? 1 : 0) | (tr ? 2 : 0) | (br ? 4 : 0) | (bl ? 8 : 0);
-}
-
-function drawSingleLineMarkerWithPopup(markerLayer, range, clazz, config, extraLength, extraData) {
-  var height = config.lineHeight;
-  var width = (range.end.column + (extraLength || 0) - range.start.column) * config.characterWidth;
-  console.log(width);
-
-  var top = markerLayer.$getTop(range.start.row, config);
-  var left = markerLayer.$padding + range.start.column * config.characterWidth;
-
-  var container = document.createElement("div");
-  container.className = clazz;
-  container.style.height = `${height}px`;
-  container.style.width = `${width}px`;
-  container.style.top = `${top}px`;
-  container.style.left = `${left}px`;
-  container.onmouseenter = EditorMarkerActions.showMarkerInfo(container);
-  container.onmouseleave = EditorMarkerActions.hideMarkerInfo(container);
-
-  if (extraData !== undefined) {
-    container.setAttribute("data-info", JSON.stringify(extraData));
-    if (extraData.popup) {
-      container.onmouseenter = EditorMarkerActions.showMarkerInfo(container);
-      container.onmouseleave = EditorMarkerActions.hideMarkerInfo(container);
-    }
-  }
-  console.log("APPEND");
-  markerLayer.element.appendChild(container);
-};
-*/

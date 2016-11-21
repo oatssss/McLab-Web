@@ -18,6 +18,8 @@ module.exports = function (app) {
     app.get('/shortenURL/:url([\\w-]*)/?', session.shortenURL);
 
     app.post('/files/upload/', multerInstance.any(), userfiles.upload);
+    app.post('/files/save/:filepath([\\w-]*)/?', userfiles.saveFile);
+    app.post('/files/newfile/:filepath([\\w-]*)/?', userfiles.newFile);
     app.get('/files/filetree/', userfiles.filetree);
     app.get('/files/readfile/:filepath([\\w-]*)/?', userfiles.readFile);
     app.get('^/files/download/:sessionID/:filepath([\\w-]*)/?', userfiles.serveGen);
@@ -26,8 +28,6 @@ module.exports = function (app) {
 
     app.post('/compile/mc2for/', compile.compileToFortran);
     app.post('/compile/mcvmjs/', compile.compileToJS);
-
-    app.post('/save/:filepath([\\w-]*)/?', session.saveFile);
 
     app.get('/docs/', session.docs);
 };
