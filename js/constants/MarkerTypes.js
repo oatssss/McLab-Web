@@ -1,11 +1,5 @@
-/**
- * Created by othnielcundangan on 2016-10-15.
- */
-
 import React from 'react';
 
-// import FileTreeStore from '../stores/FileTreeStore.js';
-// import FileExplorerComponent from '../FileExplorer.react.js';
 import FileExplorerActions from '../actions/FileExplorerActions.js';
 import OnLoadActions from '../actions/OnLoadActions.js';
 import OpenFileStore from '../stores/OpenFileStore.js';
@@ -26,7 +20,6 @@ const defineInNewFile = {
         markerClearingAction(markerInfo.type, markerInfo.name)(() => {
             const baseURL = window.location.origin;
             const sessionID = OnLoadActions.getSessionID();
-            // const filePath = FileExplorerComponent.joinPaths(FileTreeStore.getFileTree(), `${markerInfo.name}.m`);
             let filePath = OpenFileStore.getFilePath();
             filePath = filePath.split('/');
             filePath[filePath.length-1] = `${markerInfo.name}.m`;

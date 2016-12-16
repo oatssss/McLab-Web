@@ -1,7 +1,3 @@
-/**
- * Created by othnielcundangan on 2016-10-05.
- */
-
 import React from 'react';
 import { Overlay, DropdownButton, MenuItem } from 'react-bootstrap';
 import { MD } from './constants/MarkerTypes';
@@ -12,9 +8,6 @@ class MarkerPopup extends Component {
 
     constructor(props) {
         super(props);
-
-        this.showTimeout;
-        this.hideTimeout;
 
         this._triggerShowTimeout.bind(this);
         this._triggerHideTimeout.bind(this);
@@ -147,8 +140,12 @@ class MarkerPopup extends Component {
 
 MarkerPopup.transitionTimeout = 500;
 
-// MarkerPopup.propTypes = {
-//     marker: PropTypes.object,
-// };
+MarkerPopup.propTypes = {
+    type: PropTypes.string,
+    name: PropTypes.string,
+    id: PropTypes.string,
+    target: PropTypes.object,
+    container: PropTypes.object
+};
 
 export default MarkerPopup;
