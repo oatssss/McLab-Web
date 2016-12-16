@@ -8,14 +8,14 @@ module.exports = {
         app: {
             name: 'McNode',
             host: 'localhost',
-            port: 4000
+            port: 3000
         }
     },
     production: {
         app: {
             name: 'McNode',
             host: 'localhost',
-            port: 4000
+            port: 3000
         }
     }
 };
