@@ -26,6 +26,5 @@ module.exports.USER_FILE_FOLDER =  'workspace';
 // CHANGE THESE:
 module.exports.MCLAB_CORE_JAR_PATH = './bin/McLabCore.jar';
 module.exports.MC2FOR_PATH = './bin/Mc2For.jar';
-module.exports.MCVM_PATH = './bin/mcvm.js';
-module.exports.LINK_SHORTENER_API_KEY = 'AIzaSyDzVFgYHzwEeLLt7nUNkJ0tQ8igTLoXVUE';
+module.exports.LINK_SHORTENER_API_KEY = '';
 
